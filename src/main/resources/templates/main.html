@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="keywords" content="admin, dashboard, bootstrap, template, flat, modern, theme, responsive, fluid, retina, backend, html5, css, css3">
+  <meta name="description" content="">
+  <meta name="author" content="ThemeBucket">
+  <link rel="shortcut icon" href="#" type="image/png">
+    <link rel="shortcut icon" href="../resources/favicon.ico" th:href="@{/static/favicon.ico}"/>
+  <title>勤工助学管理系统</title>
+<div th:replace="common::#headlink"></div>
+</head>
+<body class="sticky-header">
+<section>
+    <!-- 左边开始-->
+    <div th:replace="common::#commonleft"></div><!-- 左边结束-->
+    <!--主要内容开始-->
+    <div class="main-content" >
+        <div th:replace="common::#commonheader"></div>
+        <!--body wrapper start style="background: #65CEA7"-->
+        <div class="wrapper"  id="right">
+<h1>欢迎登陆本系统！</h1>
+        </div>
+        <!--body end-->
+        <!--footer section start-->
+        <footer>
+            2023_本系统是由XX公司设计开发，最终解释权为本公司所有，联系电话178******91，官网WWW.XXX.com
+        </footer>
+        <!--footer section end-->
+    </div>
+</section>
+
+
+<div th:replace="common::#commonscript"></div>
+
+</body>
+</html>

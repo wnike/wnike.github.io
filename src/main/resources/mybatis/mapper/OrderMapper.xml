@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ning.bishe01.mapper.OrderMapper">
+
+    <!-- 自定义结果映射规则：映射了关联的角色信息   oid   stuuid  entuid  pid   finishwork   finishsalary   finishapplywork   applytime      -->
+    <resultMap id="orderResultMap" type="Order">
+        <id property="oid" column="oid"/>
+        <result property="stuuid" column="stuuid"/>
+        <result property="entuid" column="entuid"/>
+        <result property="pid" column="pid"/>
+        <result property="finishwork" column="finishwork"/>
+        <result property="finishsalary" column="finishsalary"/>
+        <result property="finishapplywork" column="finishapplywork"/>
+        <result property="applytime" column="applytime"/>
+        <result property="worktime" column="worktime"/>
+        <!--        &lt;!&ndash;一对一的数据关联&ndash;&gt;-->
+        <!--        <association property="user" javaType="User">-->
+        <!--            <id property="uid" column="uid"/>-->
+        <!--            <result property="username" column="username"/>-->
+        <!--        </association>-->
+    </resultMap>
+    <!--     查询订单信息通过oid-->
+    <select id="selectByOid" resultMap="orderResultMap">
+        select *
+        from t_order
+        where oid = #{oid}
+    </select>
+
+    <!--    学生查询       订单信息   通过stuuid-->
+    <select id="selectStuByStuuid" resultMap="orderResultMap">
+        select *
+        from t_order
+        where stuuid = #{stuuid}
+
+          and finishwork!=1
+
+    </select>
+
+    <!--     用工单位查询   个人订单信息   通过entuid-->
+    <select id="selectEntByEntuid" resultMap="orderResultMap">
+        select *
+        from t_order
+        where entuid = #{entuid}
+    </select>
+
+    <!--     用工单位   finishapplywork=2开始工作，finishsalary未结算-->
+    <select id="selectOrderByPid" resultMap="orderResultMap">
+        select *
+        from t_order
+        where pid = #{pid}
+        and finishapplywork=2 and finishsalary=0
+    </select>
+
+    <select id="selectByPidAndStuuid" resultMap="orderResultMap">
+        select *
+        from t_order
+        where pid = #{pid} and stuuid=#{Stuuid}
+    </select>
+
+    <select id="selectOrderList" resultMap="orderResultMap">
+        select * from t_order
+        <if test="stuuid!=null and stuuid!=''">
+            where  stuuid=#{stuuid}
+        </if>
+    </select>
+
+
+
+    <select id="selectOrderListByEntuid" resultMap="orderResultMap">
+        select * from t_order
+        where finishapplywork&lt;5
+        <if test="entuid!=null and entuid!=''">
+            and   entuid=#{entuid}
+        </if>
+
+    </select>
+    <!--   如果finishwork不为空,则条件查询  finishapplywork=2的  -->
+    <select id="selectOrderListByEntuidWork" resultMap="orderResultMap">
+        select * from t_order
+        where finishapplywork=2
+        <if test="entuid!=null and entuid!=''">
+            and   entuid=#{entuid}
+        </if>
+    </select>
+
+    <!--   用工单位查询列表,通过pid          -->
+    <select id="selectOrderListByPid" resultMap="orderResultMap">
+        select * from t_order where  pid=#{pid}
+
+
+    </select>
+
+
+
+
+    <!--添加申请岗位订单信息 -->
+    <insert id="insertOrder">
+        insert into t_order (oid, stuuid, entuid, pid, finishwork, finishsalary, finishapplywork, applytime,worktime)
+        values (#{oid}, #{stuuid}, #{entuid}, #{pid}, #{finishwork}, #{finishsalary}, #{finishapplywork},#{applytime},#{worktime})
+    </insert>
+
+    <!-- 删除申请订单信息通过oid -->
+    <delete id="deleteOrder">
+        delete
+        from t_order
+        where oid = #{oid}
+    </delete>
+    <!-- 用工单位     修改岗位订单信息通过oid    oid   stuuid  entuid  pid   finishwork   finishsalary   finishapplywork   applytime  -->
+    <update id="updateOrder">
+        update t_order
+        set
+        stuuid=#{stuuid},
+        entuid=#{entuid},
+        pid=#{pid},
+        <if test="finishwork!=null and finishwork!=''">
+            finishwork=#{finishwork},
+        </if>
+        <if test="finishsalary!=null and finishsalary!=''">
+            finishsalary=#{finishsalary},
+        </if>
+        <if test="finishapplywork!=null and finishapplywork!=''">
+            finishapplywork=#{finishapplywork},
+        </if>
+        applytime=#{applytime},
+        worktime=#{worktime}
+        where oid = #{oid}
+    </update>
+</mapper>

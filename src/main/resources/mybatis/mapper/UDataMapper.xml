@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ning.bishe01.mapper.UDataMapper">
+
+<!--    自定义结果映射规则：映射了关联的角色信息-->
+    <resultMap id="userDataResultMap" type="UData">
+        <id property="uid" column="uid"/>
+        <result property="usersex" column="usersex"/>
+        <result property="userdescribe" column="userdescribe"/>
+        <result property="usersalary" column="usersalary"/>
+        <result property="userpriority" column="userpriority"/>
+        <!--一对一的数据关联-->
+    </resultMap>
+    <!-- 查询用户全部信息通过uid -->
+    <select id="selectUDataByUid" resultMap="userDataResultMap" >
+        select *
+        from t_user_data
+        where uid = #{uid}
+    </select>
+    <select id="selectUDataList" resultMap="userDataResultMap">
+        select *
+        from t_user_data
+    </select>
+    <!-- 添加用户信息 -->
+    <insert id="insertUData" >
+        insert into t_user_data (uid, usersex, userdescribe, usersalary, userpriority)
+        values (#{uid}, #{usersex}, #{userdescribe}, #{usersalary}, #{userpriority})
+    </insert>
+    <!-- 删除用户信息通过uid -->
+    <delete id="deleteUData">
+        delete
+        from t_user_data
+        where uid = #{uid}
+    </delete>
+    <!-- 修改用户信息通过uid -->
+    <update id="updateUData">
+        update t_user_data
+        set usersex=#{usersex},
+
+        <if test="usersalary!=null and usersalary!=''">
+            usersalary=#{usersalary},
+        </if>
+        <if test="userpriority!=null and userpriority!=''">
+            userpriority=#{userpriority},
+        </if>
+            userdescribe=#{userdescribe}
+        where uid = #{uid}
+    </update>
+    <!-- 充值通过uid -->
+    <update id="updateUDataMoney">
+        update t_user_data
+        set  usersalary=#{usersalary}
+        where uid = #{uid}
+    </update>
+
+</mapper>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/info-mgt.css" />
+  <link rel="stylesheet" href="/css/WdatePicker.css" />
+  <script type="text/javascript" src="/js/jquery.js"></script>
+  <script type="text/javascript" src="/js/chinasofti.js"></script>
+  <script type="text/javascript">
+    function gotoPage(currentPage){
+      $("#currentPage").val(currentPage);
+      $("#searchForm").submit();
+    }
+    function deleteUsers(){
+      var uidcheckeds = $("input:checkbox[name='uid']:checked");
+      var uids = "";
+      if(uidcheckeds.length>0){
+        //询问用户确认进行批量删除操作吗
+        var flag = window.confirm("您确定删除这些用户吗？");
+        if(flag){
+          for(var i=0;i<uidcheckeds.length;i++){
+            uids += uidcheckeds[i].value+",";
+          }
+          window.location.href = "/deleteUsers?uids="+uids;
+        }
+      }else{
+        alert("请至少选择一名要删除的用户");
+      }
+    }
+
+    function deleteUser(uid){
+       var flag = window.confirm("您确定删除该用户吗？");
+       if(flag){//如果用户点击了确定按钮
+         window.location.href="/deleteUser?uid="+uid;
+       }
+    }
+  </script>
+</head>
+
+<body>
+<div class="title">
+  <h2>用户权限管理</h2></div>
+<form id="searchForm" action="/userList" method="post">
+<!--  <input type="hidden" th:value="${_csrf.token}" name="_csrf" th:if="${_csrf}"/>-->
+  <input type="hidden" name="currentPage" id="currentPage" th:value="1">
+<div class="query">
+  <div class="query-conditions ue-clear">
+    <div class="conditions staff ue-clear">
+      <label>用户名：</label>
+      <input type="text" name="username" th:value="${searchUser.username}" placeholder="可以直接输入或选择" />
+      <a href="javascript:;" onclick="gotoPage(1);" style="margin-left: 10px;" class="confirm">查询</a>
+    </div>
+  </div>
+</div>
+</form>
+<!-- 按钮 -->
+<div style="position:absolute;right:0;margin:-45px 5px 0 0">
+  <a href="/addUser.html" id="add" class="add">
+    <img src="../images/add_btn.png" name="Image1"  border="0" id="Image1" onmouseover="MM_swapImage('Image1','','../images/add_btn_1.jpg',1)" onmouseout="MM_swapImgRestore()" />
+  </a>
+
+  <a href="#" onclick="deleteUsers();" id="delete" class="delete" >
+    <img src="../images/delete_btn.png"  border="0" id="Image4" onmouseover="MM_swapImage('Image4','','../images/delete_btn_1.jpg',1)" onmouseout="MM_swapImgRestore()" />
+  </a>
+
+
+</div>
+
+<div class="table-box">
+  <table>
+    <thead>
+    <tr>
+      <th class="num"><input style="height: auto;" type="checkbox" id="checkAll"/></th>
+      <th class="num">用户编号</th>
+      <th class="name">用户名</th>
+      <th class="process">角色</th>
+      <th class="operate">操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user:${pageInfo.list}">
+      <td class="num"><input style="height: auto;" name="uid" type="checkbox" th:value="${user.uid}"/></td>
+      <td class="num" th:text="${user.uid}"></td>
+      <td class="name" th:text="${user.username}"></td>
+      <td class="operate">
+        <a th:href="@{/detailUser(uid=${user.uid})}">查看详情</a>&nbsp;&nbsp;
+        <a th:href="@{/updateUser.html(uid=${user.uid})}">修改</a>&nbsp;&nbsp;
+       <!-- <a th:href="@{/deleteUser(uid=${user.uid})}">删除</a>-->
+        <a href="#" th:onclick="deleteUser([[${user.uid}]])">删除</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<!--<div class="pagination ue-clear"></div>-->
+<div class="pagination ue-clear">
+  <div class="goto"><span class="text">转到第</span>
+  	<input id="yema" type="text"><span class="page">页</span>
+  	<a href="javascript:;" onclick="gotoPage(document.getElementById('yema').value);">转</a>
+  </div>
+  <div class="pagin-list">
+    <a href="javascript:;"
+       th:onclick="gotoPage([[${pageInfo.prePage}]])"
+       th:if="${pageInfo.pageNum>1}"
+       class="prev">
+      &lt;上一页
+    </a>
+    <span class="current" th:text="${pageInfo.pageNum}"></span>
+    <a href="javascript:;"
+       th:onclick="gotoPage([[${pageInfo.nextPage}]])"
+       th:if="${pageInfo.pageNum<pageInfo.pages}"
+       class="next">
+      下一页&nbsp;&gt;
+    </a>
+   </div>
+  <div class="pxofy">
+    总共<font th:text="${pageInfo.total}"></font>条，
+    总共<font th:text="${pageInfo.pages}"></font>页
+  </div></div>
+</body>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/common.js"></script>
+<script type="text/javascript" src="../js/WdatePicker.js"></script>
+<script type="text/javascript" src="../js/jquery.pagination.js"></script>
+<script type="text/javascript">
+  $(".select-title").on("click",function(){
+    $(".select-list").hide();
+    $(this).siblings($(".select-list")).show();
+    return false;
+  })
+  $(".select-list").on("click","li",function(){
+    var txt = $(this).text();
+    $(this).parent($(".select-list")).siblings($(".select-title")).find("span").text(txt);
+  })
+
+  $("tbody").find("tr:odd").css("backgroundColor","#eff6fa");
+
+  showRemind('input[type=text], textarea','placeholder');
+</script>
+</html>

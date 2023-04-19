@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="ThemeBucket">
+  <link rel="shortcut icon" href="#" type="image/png">
+  <link rel="shortcut icon" href="../resources/favicon.ico" th:href="@{/static/favicon.ico}"/>
+  <title>人脸登陆</title>
+
+  <link th:href="@{css/style.css}" rel="stylesheet">
+  <!-- 响应式样式 -->
+  <link th:href="@{css/style-responsive.css}" rel="stylesheet">
+
+  <!-- js IE8支持HTML5元素和媒体查询 IE 兼容脚本 -->
+  <!--[if lt IE 9]>
+  <script src="js/html5shiv.js"></script>
+  <script src="js/respond.min.js"></script>
+  <![endif]-->
+  <style>
+    .video {
+
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 5px;
+      -webkit-border-radius: 5px;
+    }
+    .video .video-heading {
+      margin: 0;
+      padding: 10px 15px;
+      text-align: center;
+      color: #fff;
+      position: relative;
+    }
+  </style>
+</head>
+
+<body class="login-body">
+
+<div class="container">
+  <div class="video" >
+    <div class="video-heading text-center">
+      <h2  style="color: #1b2128">人脸识别登录</h2><h5 id="msg" style="color: #f5072c;">请允许开启摄像头</h5>
+    </div>
+    <div class="login-wrap">
+      <div id="media">
+        <video id="video" name="video" width="100%" height="300" autoplay></video>
+        <canvas class="text-center" id="canvas" width="530" height="300"></canvas>
+      </div>
+      <div class="text-center">
+        <div id="button-reg" style="margin:5px;">
+          <input  type="button" onclick="faceLogin()" value="立即登录" class="btn btn btn-primary" />
+        </div>
+      </div>
+    </div></div>
+</div>
+<div th:replace="common::#commonscript"></div>
+<script type="text/javascript">
+  var video = document.getElementById("video");
+  var context = canvas.getContext("2d");
+  var con  ={
+    audio:false,
+    video:true,
+    video:{
+      width:1980,
+      height:1024,
+
+    }
+  };
+
+  //导航获取用户媒体对象
+  navigator.mediaDevices.getUserMedia(con).then(function(stream){
+    try{
+      video.src = window.URL.createObjectURL(stream);
+    }catch(e){
+      video.srcObject=stream;
+    }
+    video.onloadmetadate = function(e){
+      video.play();
+    }
+  });
+
+  // var token = $("meta[name='_csrf']").attr("content");
+  // var header = $("meta[name='_csrf_header']").attr("content");
+  // $(document).ajaxSend(function(e,xhr,options){
+  //   xhr.setRequestHeader(header,token);
+  // });
+
+  function faceLogin(){
+    //把流媒体数据画到convas画布上去
+    context.drawImage(video,0,0,530,300);
+    var img = getBase64();
+
+    $.ajax({
+      url:"/faceLogin",
+      type: "post",
+      data:{"img":img},
+      success:function(msg){
+        if(msg=="SUCCESS"){
+          alert("成功");
+          window.location.href="main.html";
+        }else{
+          alert("失败");
+        }
+      }
+    });
+  }
+
+  function getBase64() {
+    var imgSrc = document.getElementById("canvas").toDataURL("image/png");
+    return imgSrc.split("base64,")[1];
+  };
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.thymeleaf.org/hymeleaf-extras-shiro">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="ThemeBucket">
+    <link rel="shortcut icon" href="#" type="image/png">
+
+    <title>岗位列表</title>
+
+    <!--dynamic table-->
+    <link href="js/advanced-datatable/css/demo_page.css" rel="stylesheet"/>
+    <link href="js/advanced-datatable/css/demo_table.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="js/data-tables/DT_bootstrap.css"/>
+
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body class="sticky-header">
+
+<section>
+
+    <!--body wrapper start-->
+    <div class="wrapper">
+        <div class="row">
+            <div class="col-sm-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        岗位列表
+                        <p id="msg" style="color: #E81A29FF" th:text="${msg}"></p>
+                        <span class="tools pull-right">
+                <a href="javascript:;" class="fa fa-chevron-down"></a>
+                <a href="javascript:;" class="fa fa-times"></a>
+             </span>
+                    </header>
+                    <div class="panel-body">
+                        <div class="adv-table">
+                            <table class="display table table-bordered table-striped" id="dynamic-table">
+                                <thead>
+                                <tr>
+                                    <th><input style="height: auto;" type="checkbox" id="checkAll"/></th>
+                                    <th>岗位id</th>
+                                    <th>岗位名称</th>
+                                    <th>用工单位</th>
+                                    <th class="hidden-phone">招收人数（已经录用人数）</th>
+                                    <th class="hidden-phone">剩余名额</th>
+                                    <th class="hidden-phone">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="post:${pageInfo.list}" class="gradeX">
+                                    <td class="center num">
+                                        <input style="height: auto;" name="pid" type="checkbox" th:value="${post.pid}"/>
+                                    </td>
+                                    <td class="  sorting_1" th:text="${post.pid}">pid</td>
+                                    <td class="name" th:text="${post.postname}">postname</td>
+                                    <td class="name" th:text="${post.user.username}"></td>
+                                    <td class="name" th:text="${post.totalNumber}+'('+${post.hireNumber}+')'"></td>
+                                    <td class="name" th:text="${post.totalNumber-post.hireNumber}"></td>
+                                    <td class="center operate" shiro:hasPermission="管理员">
+                                        <a href="javascript:;"  data-skip-view="/detail_post" th:value="${post.pid}" th:apply-post="${post.applyPost}"  onclick="operatePost(this)">查看详情</a>&nbsp;&nbsp;
+                                        <a href="javascript:;"  data-skip-view="/update_post" th:value="${post.pid}" th:apply-post="${post.applyPost}"  onclick="operatePost(this)">修改</a>&nbsp;&nbsp;
+                                        <!-- <a th:href="@{/deleteUser(uid=${user.uid})}">删除</a>-->
+                                        <!-- javascript:是伪协议，表示url的内容通过javascript执行。-->
+                                        <a href="javascript:;" data-skip-view="/delete_post" th:value="${post.pid}" th:apply-post="${post.applyPost}"  onclick="operatePost(this)">删除</a>
+                                    </td>
+                                    <td class="center operate" shiro:hasPermission="学生">
+                                        <a href="javascript:;"  data-skip-view="/detail_post" th:value="${post.pid}" th:apply-post="${post.applyPost}"  onclick="operatePost(this)">查看详情</a>&nbsp;&nbsp;
+                                        <a th:if="${(post.totalNumber-post.hireNumber)!=0}" href="javascript:;"  data-skip-view="/add_order" th:value="${post.pid}" th:apply-post="${post.applyPost}"  onclick="operatePost(this)">申请岗位</a>&nbsp;&nbsp;
+                                        <!-- <a th:href="@{/deleteUser(uid=${user.uid})}">删除</a>-->
+                                        <!-- javascript:是伪协议，表示url的内容通过javascript执行。-->
+<!--                                        <a href="javascript:;" data-skip-view="/delete_post" th:value="${post.pid}" th:apply-post="${post.applyPost}"  onclick="operatePost(this)">删除</a>-->
+                                    </td>
+                                    <td class="center operate" shiro:hasPermission="用工单位">
+                                        <a href="javascript:;"  data-skip-view="/detail_post" th:value="${post.pid}" th:apply-post="${post.applyPost}"  onclick="operatePost(this)">查看详情</a>&nbsp;&nbsp;
+<!--                                        <a href="javascript:;"  data-skip-view="/add_order" th:value="${post.pid}" th:apply-post="${post.applyPost}"  onclick="operatePost(this)">申请岗位</a>&nbsp;&nbsp;-->
+                                        <!-- <a th:href="@{/deleteUser(uid=${user.uid})}">删除</a>-->
+                                        <!-- javascript:是伪协议，表示url的内容通过javascript执行。-->
+                                        <!--                                        <a href="javascript:;" data-skip-view="/delete_post" th:value="${post.pid}" th:apply-post="${post.applyPost}"  onclick="operatePost(this)">删除</a>-->
+                                    </td>
+                                </tr>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th><input style="height: auto;" type="checkbox" id="checkAll"/></th>
+                                    <th>岗位id</th>
+                                    <th>岗位名称</th>
+                                    <th>用工单位</th>
+                                    <th class="hidden-phone">招收人数（已经录用人数）</th>
+                                    <th class="hidden-phone">剩余名额</th>
+                                    <th class="hidden-phone">操作</th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+    </div>
+    <!--body wrapper end-->
+</section>
+<!--dynamic table-->
+<script type="text/javascript" language="javascript" src="js/advanced-datatable/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="js/data-tables/DT_bootstrap.js"></script>
+<!--dynamic table initialization -->
+<script src="js/dynamic_table_init.js"></script>
+<script>
+
+    function operatePost(obj) {
+
+
+
+
+        var href = $(obj).attr("data-skip-view"); //获取请求的url
+        var pid = $(obj).attr("value");//获取pid
+        var deleteOK=true;
+        var data="pid="+pid+"&applyPost="+$(obj).attr("apply-post");
+        if(href=="/delete_post"){
+           deleteOK=confirm("确定操作？");
+        }
+        if(href=="/add_order"){
+
+            var stuuid=$("#sessionuid").attr("data-name-value");
+            data="pid="+pid+"&stuuid="+stuuid;
+            console.log("data"+data);
+        }
+        if (deleteOK) {
+            //ajax 请求
+            $.ajax({
+                url: href,
+                type: "post",
+                data: data,
+                dataType: "html",
+                success: function (ht) {
+                    if(href=="/delete_post"){
+                        alert("删除【"+pid+"】成功");
+                    }
+                    $("#right").html(ht);  //请求的界面数据在右侧显示
+                },
+                error: function (ht) {
+                    alert("未知异常");
+                    $("#right").html("加载失败", ht);  //请求的界面数据在右侧显示
+                }
+            });
+
+        }
+    }
+</script>
+</body>
+</html>

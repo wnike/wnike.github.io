@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.thymeleaf.org/hymeleaf-extras-shiro">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="ThemeBucket">
+    <link rel="shortcut icon" href="#" type="image/png">
+
+    <title>学生工作详情</title>
+
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+
+    <![endif]-->
+    <style>
+        .orderState{
+            padding-top: 7px;
+        }
+    </style>
+</head>
+
+<body class="sticky-header">
+
+<section>
+
+    <!--body wrapper start-->
+    <div class="wrapper">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        查看学生工作信息
+                    </header>
+                    <div class="panel-body">
+                        <div class=" form">
+                            <form class="cmxform form-horizontal adminex-form" id="commentForm" method="get" action="">
+
+                                <div class="form-group ">
+                                    <label for="pid" class="control-label col-lg-2">岗位id</label>
+                                    <div class="col-lg-10">
+                                        <input class="form-control " id="pid" type="text" th:value="${order.pid}"
+                                               name="pid" readonly="readonly" required/>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label for="postname" class="control-label col-lg-2">岗位名</label>
+                                    <div class="col-lg-10">
+                                        <input class="form-control " id="postname" type="text"
+                                               th:value="${post.postname}" name="postname" readonly="readonly"
+                                               required/>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label for="salary" class="control-label col-lg-2">薪资/日</label>
+                                    <div class="col-lg-10">
+                                        <input class="form-control " id="salary" type="text" th:value="${post.salary}"
+                                               name="salary" readonly="readonly" required/>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group ">
+                                    <label for="stuuid" class="control-label col-lg-2">学生id</label>
+                                    <div class="col-lg-10">
+                                        <input class="form-control " id="stuuid" type="text" th:value="${order.stuuid}"
+                                               name="stuuid" readonly="readonly" required/>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label for="userstuname" class="control-label col-lg-2">学生姓名</label>
+                                    <div class="col-lg-10">
+                                        <input class="form-control " id="userstuname" type="text"
+                                               th:value="${userstu.username}" name="userstuname" readonly="readonly"
+                                               required/>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label for="grade" class="control-label col-lg-2">班级</label>
+                                    <div class="col-lg-10">
+                                        <input class="form-control " id="grade" type="text" th:value="${userstu.grade}"
+                                               name="grade" readonly="readonly" required/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group ">
+                                    <label class="control-label col-lg-2">状态</label>
+                                    <div class="col-lg-10">
+                                        <!--                                            <input class="form-control " id="state" type="text" th:value="${order.state}" name="state" readonly="readonly" required />-->
+                                        <p class="orderState" th:if="${order.state==0}" th:text="申请中（等待用工单位审核）"></p>
+                                        <p class="orderState" th:if="${order.state==1}" th:text="申请中（等待管理员审核）"></p>
+                                        <p class="orderState" th:if="${order.state==2}" th:text="工作中"></p>
+                                        <p class="orderState" th:if="${order.state==3}" th:text="工作已经完成（未结算）"></p>
+                                        <p class="orderState" th:if="${order.state==4}" th:text="工作已结算"></p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group " th:if="${order.state>1}">
+                                    <label for="applytime" class="control-label col-lg-2">工作开始时间(申请同意时间)</label>
+                                    <div class="col-lg-10" >
+                                        <input class="form-control " id="applytime" type="text"
+                                               th:value="${#dates.format(order.applytime, 'yyyy-MM-dd HH:MM:SS')}"
+                                               name="applytime" readonly="readonly" required/>
+                                    </div>
+                                </div>
+                                <div class="form-group " th:if="${order.state>2}">
+                                    <label for="worktime" class="control-label col-lg-2">工作完成时间</label>
+                                    <div class="col-lg-10">
+                                        <input class="form-control " id="worktime" type="text"
+                                               th:value="${#dates.format(order.worktime, 'yyyy-MM-dd HH:MM:SS')}"
+                                               name="worktime" readonly="readonly" required/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-lg-offset-2 col-lg-10">
+                                        <button shiro:hasPermission="学生" class="btn btn-primary" type="button"
+                                                data-skip-view="/order_list" onclick="goBackHTML(this);">返回
+                                        </button>
+                                        <button shiro:hasPermission="用工单位" class="btn btn-primary" type="button"
+                                                data-skip-view="/order_list_en" onclick="goBackHTML(this);">返回
+                                        </button>
+                                        <button shiro:hasPermission="管理员" class="btn btn-primary" type="button"
+                                                data-skip-view="/order_list_admin" onclick="goBackHTML(this);">返回
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!--body wrapper end-->
+</section>
+
+
+<script type="text/javascript" src="js/jquery.validate.min.js"></script>
+<script src="js/validation-init.js"></script>
+<script type="text/javascript">
+    function goBackHTML(obj) {
+
+        var href = $(obj).attr("data-skip-view");
+        //返回列表界面
+        $.ajax({
+            url: href,
+            type: "post",
+            dataType: "html",
+            success: function (ht) {
+                $("#right").html(ht);  //请求的界面数据在右侧显示
+            },
+            error: function (ht) {
+                alert("未知异常");
+                $("#right").html("加载失败", ht);  //请求的界面数据在右侧显示
+            }
+        });
+    }
+</script>
+</body>
+</html>

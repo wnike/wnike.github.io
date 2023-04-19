@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="ThemeBucket">
+    <link rel="shortcut icon" href="#" type="image/png">
+
+    <title>岗位详情</title>
+
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+
+    <![endif]-->
+</head>
+
+<body class="sticky-header">
+
+<section>
+
+        <!--body wrapper start-->
+        <div class="wrapper">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            查看岗位信息
+                        </header>
+                        <div class="panel-body">
+                            <div class=" form">
+                                <form class="cmxform form-horizontal adminex-form" id="commentForm" method="get" action="">
+
+                                    <div class="form-group ">
+                                        <label for="pid" class="control-label col-lg-2">岗位id</label>
+                                        <div class="col-lg-10">
+                                            <input class="form-control " id="pid" type="text" th:value="${post.pid}" name="pid" readonly="readonly" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="postname" class="control-label col-lg-2">岗位名</label>
+                                        <div class="col-lg-10">
+                                            <input class="form-control " id="postname" type="text" th:value="${post.postname}" name="postname" readonly="readonly" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="uid" class="control-label col-lg-2">岗位所属单位</label>
+                                        <div class="col-lg-10">
+                                            <input class="form-control " id="uid" type="text" th:value="${post.user.username}" name="uid" readonly="readonly" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="pdescribe" class="control-label col-lg-2">岗位介绍</label>
+                                        <div class="col-lg-10">
+                                            <textarea class="form-control " id="pdescribe" th:value="${post.pdescribe}" name="pdescribe" readonly="readonly" required ></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="salary" class="control-label col-lg-2">薪资/日</label>
+                                        <div class="col-lg-10">
+                                            <input class="form-control " id="salary" type="text" th:value="${post.salary}" name="salary" readonly="readonly" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="totalNumber" class="control-label col-lg-2">招收人数</label>
+                                        <div class="col-lg-10">
+                                            <input class="form-control " id="totalNumber" type="text" th:value="${post.totalNumber}" name="totalNumber" readonly="readonly" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="hireNumber" class="control-label col-lg-2">已收人数</label>
+                                        <div class="col-lg-10">
+                                            <input class="form-control " id="hireNumber" type="text" th:value="${post.hireNumber}" name="hireNumber" readonly="readonly" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="vacantNumber" class="control-label col-lg-2">剩余名额</label>
+                                        <div class="col-lg-10">
+                                            <input class="form-control " id="vacantNumber" type="text" th:value="${post.totalNumber-post.hireNumber}" name="vacantNumber" readonly="readonly" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-lg-offset-2 col-lg-10">
+                                            <button  class="btn btn-primary" type="button" th:apply_post="${post.applyPost}" id="apply_post" name="apply_post"  onclick="goBackHTML();">返回</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <!--body wrapper end-->
+</section>
+
+
+<script type="text/javascript" src="js/jquery.validate.min.js"></script>
+<script src="js/validation-init.js"></script>
+<script type="text/javascript">
+    function goBackHTML(){
+        var href;
+        if($("#apply_post").attr("apply_post")==1){
+            href="/post_list";
+        }else {
+            href="/post_list_apply";
+        }
+        //返回列表界面
+        $.ajax({
+            url: href,
+            type: "post",
+            dataType: "html",
+            success: function (ht) {
+                $("#right").html(ht);  //请求的界面数据在右侧显示
+            },
+            error: function (ht) {
+                alert("未知异常");
+                $("#right").html("加载失败", ht);  //请求的界面数据在右侧显示
+            }
+        });
+    }
+</script>
+</body>
+</html>

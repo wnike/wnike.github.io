@@ -1,0 +1,24 @@
+server:
+  port: 8000
+#配置数据库连接属性
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bishe01?useSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
+    username: root
+    password: abc123456789
+
+
+  thymeleaf:
+    cache: false
+
+#  thymeleaf:
+#    prefix: classpath:/templates/
+#    encoding: UTF-8
+
+mybatis-plus:
+  mapper-locations: classpath*:mybatis/mapper/*.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+
+
+

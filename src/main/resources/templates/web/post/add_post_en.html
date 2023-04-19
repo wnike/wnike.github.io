@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="ThemeBucket">
+    <link rel="shortcut icon" href="#" type="image/png">
+
+    <title>添加岗位_en</title>
+
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+
+    <![endif]-->
+</head>
+
+<body class="sticky-header">
+
+<section>
+
+    <!--body wrapper start-->
+    <div class="wrapper">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        添加岗位信息<p id="msg" style="color: #E81A29FF" th:text="${msg}">
+                    </p>
+                    </header>
+                    <div class="panel-body">
+                        <div class=" form">
+                            <form class="cmxform form-horizontal adminex-form" id="updateForm" method="post" action="">
+
+                                <div class="form-group ">
+                                    <label for="pid" class="control-label col-lg-2">岗位id</label>
+                                    <div class="col-lg-10">
+                                        <input class="form-control " id="pid" type="text" th:value="${post.pid}"
+                                               name="pid"  required/>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label for="postname" class="control-label col-lg-2">岗位名</label>
+                                    <div class="col-lg-10">
+                                        <input class="form-control " id="postname" type="text"
+                                               th:value="${post.postname}" name="postname" required/>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label for="pdescribe" class="control-label col-lg-2">岗位介绍</label>
+                                    <div class="col-lg-10">
+                                        <textarea  class="form-control " id="pdescribe" type="text"
+                                               th:value="${post.pdescribe}" name="pdescribe" required>
+                                        </textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label for="salary" class="control-label col-lg-2">薪资/日</label>
+                                    <div class="col-lg-10">
+                                        <input class="form-control " id="salary" type="text" th:value="${post.salary}"
+                                               name="salary" required="required"/>
+                                    </div>
+                                </div>
+                                <div class="form-group " id="totalNumber-display">
+                                    <label for="totalNumber" class="control-label col-lg-2">招收人数</label>
+                                    <div class="col-lg-10">
+                                        <input class="form-control " id="totalNumber" type="text"
+                                               th:value="${post.totalNumber}" name="totalNumber" required="required"/>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label for="hireNumber" class="control-label col-lg-2">已收人数</label>
+                                    <div class="col-lg-10">
+                                        <input class="form-control " id="hireNumber" type="text"
+                                               th:value="${post.hireNumber}" name="hireNumber" placeholder=""
+                                               required="required"/>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label for="vacantNumber" class="control-label col-lg-2">剩余人数<p id="msg2" style="color: #E81A29FF"></p></label>
+                                    <div class="col-lg-10">
+                                        <input class="form-control " id="vacantNumber" type="text"
+                                                readonly=“readonly”
+                                               required="required"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-lg-offset-2 col-lg-10">
+                                        <button class="btn btn-primary" type="button" onclick="addPost_en();">保存
+                                        </button>
+<!--                                        <button class="btn btn-primary" type="button" onclick="goBackHTML();">返回-->
+<!--                                        </button>-->
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+
+    </div>
+    <!--body wrapper end-->
+</section>
+
+<script type="text/javascript" src="js/jquery.validate.min.js"></script>
+<script src="js/validation-init.js"></script>
+
+<script type="text/javascript">
+    $(function(){
+        $("#totalNumber").on("input", function (){
+            $("#vacantNumber").val(null);
+            if ($("#totalNumber").val() != null && $("#hireNumber").val() != null) {
+                if (parseInt($("#totalNumber").val()) >= parseInt($("#hireNumber").val())) {
+
+                    let vacant = parseInt($("#totalNumber").val()) - parseInt($("#hireNumber").val());
+                    $("#vacantNumber").val(vacant);
+                    $("#vacantNumber").css("color", "black");
+                } else {
+                    let vacant = parseInt($("#totalNumber").val()) - parseInt($("#hireNumber").val());
+                    $("#vacantNumber").val(vacant);
+                    $("#vacantNumber").css("color", "red");
+
+                }
+            } else {
+
+            }
+        });
+        $("#hireNumber").on("input", function (){
+            $("#vacantNumber").val(null);
+            if ($("#totalNumber").val() != null && $("#hireNumber").val() != null) {
+                if (parseInt($("#totalNumber").val()) >= parseInt($("#hireNumber").val())) {
+
+                    let vacant = parseInt($("#totalNumber").val()) - parseInt($("#hireNumber").val());
+                    $("#vacantNumber").val(vacant);
+                    $("#vacantNumber").css("color", "black");
+                } else {
+                    let vacant = parseInt($("#totalNumber").val()) - parseInt($("#hireNumber").val());
+                    $("#vacantNumber").val(vacant);
+                    $("#vacantNumber").css("color", "red");
+
+                }
+            } else {
+
+            }
+        });
+    } )
+    // function goBackHTML() {
+    //     //返回用户列表界面
+    //     $.ajax({
+    //         url: "/post_list",
+    //         type: "get",
+    //         dataType: "html",
+    //         success: function (ht) {
+    //             $("#right").html(ht);  //请求的界面数据在右侧显示
+    //         },
+    //         error: function (ht) {
+    //             alert("未知异常");
+    //             $("#right").html("加载失败", ht);  //请求的界面数据在右侧显示
+    //         }
+    //     });
+    // }
+
+    function addPost_en() {
+        if($("#pid").val()==null||$("#pid").val().trim()==""){
+            $("#msg").text("pid不能为空");
+        }else
+        if (parseInt($("#vacantNumber").val()) < 0) {
+            $("#msg2").text("人数有误")
+        } else if(parseInt($("#hireNumber").val())==null||parseInt($("#totalNumber").val())==null||$("#totalNumber").val()==""||$("#hireNumber").val()==""){
+            $("#msg").text("人数不能为空");
+        } else {
+            // $("#uid").attr("readonly","false");
+            if ($("#uid").val() == 0) {
+                $("#msg").text("请选择所属单位")
+            } else {
+                $.ajax({
+                    url: "/add_post_en",
+                    type: "post",
+                    data: $("#updateForm").serialize(),
+                    dataType: "html",
+                    success: function (ht) {
+                        $("#right").html(ht);  //请求的界面数据在右侧显示
+                    },
+                    error: function (ht) {
+                        alert("未知异常");
+                        $("#right").html("加载失败", ht);  //请求的界面数据在右侧显示
+                    }
+                });
+            }
+        }
+    }
+</script>
+</body>
+</html>

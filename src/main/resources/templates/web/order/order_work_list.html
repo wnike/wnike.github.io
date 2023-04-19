@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.thymeleaf.org/hymeleaf-extras-shiro">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="ThemeBucket">
+    <link rel="shortcut icon" href="#" type="image/png">
+
+    <title>学生工作进度——用工单位</title>
+
+    <!--dynamic table-->
+    <link href="js/advanced-datatable/css/demo_page.css" rel="stylesheet"/>
+    <link href="js/advanced-datatable/css/demo_table.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="js/data-tables/DT_bootstrap.css"/>
+
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body class="sticky-header">
+
+<section>
+
+    <!--body wrapper start-->
+    <div class="wrapper">
+        <div class="row">
+            <div class="col-sm-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        学生工作进度
+                        <p id="msg" style="color: #E81A29FF" th:text="${msg}"></p>
+                        <span class="tools pull-right">
+                <a href="javascript:;" class="fa fa-chevron-down"></a>
+                <a href="javascript:;" class="fa fa-times"></a>
+             </span>
+                    </header>
+                    <div class="panel-body">
+                        <div class="adv-table">
+                            <table class="display table table-bordered table-striped" id="dynamic-table">
+                                <thead>
+                                <tr>
+                                    <th><input style="height: auto;" type="checkbox" id="checkAll"/></th>
+                                    <th>岗位id</th>
+                                    <th>岗位名称</th>
+
+                                    <th>学生id</th>
+                                    <th>学生姓名</th>
+                                    <th>学生班级</th>
+                                    <th class="hidden-phone">状态</th>
+                                    <th class="hidden-phone">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="i:${#numbers.sequence(0,orderList.size()-1)}" class="gradeX">
+                                    <td class="center num">
+                                        <input style="height: auto;" name="pid" type="checkbox"
+                                               th:value="${postList[i].pid}"/>
+                                    </td>
+                                    <td class="  sorting_1" th:text="${postList[i].pid}">pid</td>
+                                    <td class="name" th:text="${postList[i].postname}">postname</td>
+
+                                    <td class="name" th:text="${userList[i].uid}"></td>
+                                    <td class="name" th:text="${userList[i].username}"></td>
+                                    <td class="name" th:text="${userList[i].grade}"></td>
+                                    <td class="name" th:if="${orderList[i].state==0}" th:text="申请中（等待用工单位审核）"></td>
+                                    <td class="name" th:if="${orderList[i].state==1}" th:text="申请中（等待管理员审核）"></td>
+                                    <td class="name" th:if="${orderList[i].state==2}" th:text="工作中"></td>
+                                    <td class="name" th:if="${orderList[i].state==3}" th:text="工作已经完成（未结算）"></td>
+                                    <td class="name" th:if="${orderList[i].state==4}" th:text="工作已结算"></td>
+                                    <!--                                    <td class="center operate" shiro:hasPermission="学生">-->
+                                    <!--                                        <a href="javascript:;"  data-skip-view="/detail_post" th:value="${post.pid}" th:apply-post="${post.applyPost}"  onclick="operatePost(this)">查看详情</a>&nbsp;&nbsp;-->
+                                    <!--                                        <a href="javascript:;" th:if="${order.state!=2&&order.state!=3}" data-skip-view="/delete_order" th:value="${order.oid}" onclick="operatePost(this)">删除岗位申请</a>&nbsp;&nbsp;-->
+                                    <!--&lt;!&ndash;                                        <a href="javascript:;" data-skip-view="/delete_post" th:value="${post.pid}" th:apply-post="${post.applyPost}"  onclick="operatePost(this)">删除</a>&ndash;&gt;-->
+                                    <!--                                    </td>-->
+                                    <td class="center operate" shiro:hasPermission="用工单位">
+<!--                                        <a href="javascript:;" data-skip-view="/detail_post_en"-->
+<!--                                           th:value="${postList[i].pid}" th:apply-post="${postList[i].applyPost}"-->
+<!--                                           onclick="operateOrderEn(this)">单位详情</a>&nbsp;&nbsp;-->
+<!--                                        <a href="javascript:;" data-skip-view="/detail_order_en"-->
+<!--                                           th:value="${orderList[i].oid}" th:apply-post="${postList[i].applyPost}"-->
+<!--                                           onclick="operateOrderEn(this)">工作详情</a>&nbsp;&nbsp;-->
+                                        <a href="javascript:;"
+                                           th:if="${orderList[i].state==2}"
+                                           data-skip-view="/update_order_en" th:value="${orderList[i].oid}" th:data_name="finishwork"
+                                           th:finishwork="1" onclick="operateOrderEn(this)">完成工作</a>
+                                        <a href="javascript:;"
+                                           th:if="${orderList[i].state==3}"
+                                           data-skip-view="/update_order_en" th:value="${orderList[i].oid}" th:data_name="finishsalary"
+                                           th:finishsalary="1" onclick="operateOrderEn(this)">结算酬劳</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th><input style="height: auto;" type="checkbox" id="checkAll"/></th>
+                                    <th>岗位id</th>
+                                    <th>岗位名称</th>
+                                    <th>学生id</th>
+                                    <th>学生姓名</th>
+                                    <th>学生班级</th>
+                                    <th class="hidden-phone">状态</th>
+                                    <th class="hidden-phone">操作</th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+    </div>
+    <!--body wrapper end-->
+</section>
+<!--dynamic table-->
+<script type="text/javascript" language="javascript" src="js/advanced-datatable/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="js/data-tables/DT_bootstrap.js"></script>
+<!--dynamic table initialization -->
+<script src="js/dynamic_table_init.js"></script>
+<script>
+
+    function operateOrderEn(obj) {
+        var href = $(obj).attr("data-skip-view"); //获取请求的url
+        var pid = $(obj).attr("value");//获取pid
+        var deleteOK = true;
+        var data = "pid=" + pid + "&applyPost=" + $(obj).attr("apply-post");
+
+       if (href == "/update_order_en") {
+            data = "oid=" + $(obj).attr("value") +"&"+ $(obj).attr("data_name")+"=1";
+        }
+        if (deleteOK) {
+            //ajax 请求
+            $.ajax({
+                url: href,
+                type: "post",
+                data: data,
+                dataType: "html",
+                success: function (ht) {
+                    $("#right").html(ht);  //请求的界面数据在右侧显示
+                },
+                error: function (ht) {
+                    alert("未知异常");
+                    $("#right").html("加载失败", ht);  //请求的界面数据在右侧显示
+                }
+            });
+
+        }
+    }
+</script>
+</body>
+</html>

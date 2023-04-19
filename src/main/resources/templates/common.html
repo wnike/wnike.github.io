@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.thymeleaf.org/hymeleaf-extras-shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>公共</title>
+    <div id="headlink">
+        <!--图表样式-->
+        <link th:href="@{js/iCheck/skins/minimal/minimal.css}" rel="stylesheet">
+        <link th:href="@{js/iCheck/skins/square/square.css}" rel="stylesheet">
+        <link th:href="@{js/iCheck/skins/square/red.css}" rel="stylesheet">
+        <link th:href="@{js/iCheck/skins/square/blue.css}" rel="stylesheet">
+
+        <!--日历样式-->
+        <link th:href="@{css/clndr.css}" rel="stylesheet">
+        <!--common-->
+        <link th:href="@{css/style.css}" rel="stylesheet">
+        <!-- 响应式样式 -->
+        <link th:href="@{css/style-responsive.css}" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+        <script th:src="@{js/html5shiv.js}"></script>
+        <script th:src="@{js/respond.min.js}"></script>
+        <script th:src="@{js/data-tables/DT_bootstrap.css}"></script>
+        <![endif]-->
+        <script>
+            function skipPage(obj) {
+                var href = $(obj).attr("data-skip-view");//即将跳转的界面名称
+                var data_name=$(obj).attr("data-name");//获取参数名
+                //ajax 请求
+                $.ajax({
+                    url: href,
+                    type: "post",
+                    data: data_name+"=" + $(obj).attr("data-name-value"),
+                    dataType: "html",
+                    success: function (ht) {
+                        $("#right").html(ht);  //请求的界面数据在右侧显示
+                    },
+                    error: function (ht) {
+                        $("#right").html("加载失败", ht);  //请求的界面数据在右侧显示
+                    }
+                });
+            }
+            function goAdd(obj) {
+                var href = $(obj).attr("data-skip-view");//即将跳转的界面名称
+                //ajax 请求
+                $.ajax({
+                    url: href,
+                    type: "post",
+                    dataType: "html",
+                    success: function (ht) {
+                        $("#right").html(ht);  //请求的界面数据在右侧显示
+                    },
+                    error: function (ht) {
+                        $("#right").html("加载失败", ht);  //请求的界面数据在右侧显示
+                    }
+                });
+
+            }
+        </script>
+
+    </div>
+</head>
+<body>
+<!-- 左边开始-->
+<div id="commonleft" class="left-side sticky-left-side">
+
+    <!--网站logo 大 和 小-->
+    <div class="logo">
+        <a href="main.html"><img src="images/logo.png" alt=""></a>
+    </div>
+
+    <!-- 隐藏侧边栏时显示logo -->
+    <div class="logo-icon text-center">
+        <a href="main.html"><img src="images/logo_icon.png" alt=""></a>
+    </div>
+    <!--网站logo 大 和 小-->
+
+    <div class="left-side-inner">
+
+        <!-- 头部用户个人操作 -->
+        <div class="visible-xs hidden-sm hidden-md hidden-lg">
+            <div class="media logged-user">
+                <img alt="" src="images/photos/user-avatar.png" class="media-object">
+                <div class="media-body">
+                    <h4><a href="#"></a></h4>
+                    <span>"你好啊..."</span>
+                </div>
+            </div>
+
+            <h5 class="left-nav-title">账户信息</h5>
+            <ul class="nav nav-pills nav-stacked custom-nav">
+                <li><a href="#"><i class="fa fa-user"></i> <span>用户资料 </span></a></li>
+                <li><a href="#"><i class="fa fa-cog"></i> <span>设置</span></a></li>
+                <li><a th:href="@{/logout}"><i class="fa fa-sign-out"></i> <span>退出</span></a></li>
+            </ul>
+        </div>
+
+        <!--侧边栏导航开始-->
+        <div id="menulist">
+            <ul class="nav nav-pills nav-stacked custom-nav"shiro:hasPermission="管理员">
+                <!--                shiro:hasPermission="管理员"-->
+                <li class="menu-list nav-active" >
+                    <a href="index.html" >
+                        <i class="fa fa-home"></i> <span>用户管理</span></a>
+                    <ul class="sub-menu-list">
+                        <li><a href="javascript:;" data-skip-view="/user_list" data-name="rid" data-name-value=""  onclick="skipPage(this)">用户列表</a></li>
+                        <li><a href="javascript:;" data-skip-view="/user_list" data-name="rid" data-name-value="1" onclick="skipPage(this)">学生列表</a>
+                        </li>
+                        <li><a href="javascript:;" data-skip-view="/user_list" data-name="rid" data-name-value="2" onclick="skipPage(this)">用工单位列表</a>
+                        </li>
+                        <li><a href="javascript:;" data-skip-view="/add_user" onclick="goAdd(this)">添加用户信息</a></li>
+                    </ul>
+                </li>
+                <li class="menu-list" ><a href="#"><i class="fa fa-laptop" ></i> <span>岗位管理</span></a>
+                    <ul class="sub-menu-list">
+                        <li>
+                            <a href="javascript:;" data-skip-view="/post_list" data-name="pid" data-name-value=""
+                               onclick="skipPage(this)">岗位列表</a>
+                        </li>
+                        <li >
+                            <a href="javascript:;" data-skip-view="/add_post" onclick="goAdd(this)">添加岗位信息</a>
+                        </li>
+
+                    </ul>
+                </li>
+                <li class="menu-list" ><a href="#" ><i class="fa fa-book"></i> <span>申请管理</span></a>
+                    <ul class="sub-menu-list">
+                        <li>
+                            <a href="javascript:;" data-skip-view="/post_list_apply" data-name="rid" data-name-value="" onclick="skipPage(this)">用工单位岗位申报</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" data-skip-view="/order_list_admin" data-name="rid" data-name-value="" onclick="skipPage(this)">学生岗位申请</a>
+                        </li>
+<!--                        <li>-->
+<!--                            <a href="javascript:;" data-skip-view="/maintenance" data_pid="1" onclick="skipPage(this)">酬金申请</a>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <a href="javascript:;" data-skip-view="/maintenance" data-name="rid" data-name-value="" onclick="skipPage(this)">个人申请清单</a>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <a href="javascript:;" data-skip-view="/user_list" data_pid="2" onclick="skipPage(this)">用工单位列表</a>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <a href="javascript:;" data-skip-view="/add_post" onclick="goAdd(this)">添加岗位信息</a>-->
+<!--                        </li>-->
+                    </ul>
+                </li>
+                <li class="menu-list" ><a href="#"><i class="fa fa-plus" ></i> <span>其他</span></a>
+                    <ul class="sub-menu-list">
+                        <li>
+                            <a href="javascript:;" data-skip-view="/add_money" data-name="" data-name-value=""
+                               onclick="skipPage(this)">充值</a>
+                        </li>
+                    </ul>
+                    <ul class="sub-menu-list">
+                        <li><a href="javascript:;" data-skip-view="/faceReg.html" data-name="stuuid" th:data-name-value="${session.uid}" onclick="skipPage(this)">添加人脸登录</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <ul class="nav nav-pills nav-stacked custom-nav"shiro:hasPermission="用工单位">
+                <!--                shiro:hasPermission="管理员"-->
+                <li class="menu-list nav-active" >
+                    <a href="index.html" >
+                        <i class="fa fa-home"></i> <span>用户中心</span></a>
+                    <ul class="sub-menu-list">
+                        <li><a href="javascript:;" data-skip-view="/user_data" data-name="uid" th:data-name-value="${session.uid}"  onclick="skipPage(this)">个人中心</a></li>
+                        <li><a href="javascript:;" data-skip-view="/update_password" data-name="uid" th:data-name-value="${session.uid}"  onclick="skipPage(this)">修改密码</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-list" ><a href="#"><i class="fa fa-laptop" ></i> <span>岗位管理</span></a>
+                    <ul class="sub-menu-list">
+                        <li>
+                            <a href="javascript:;" data-skip-view="/post_list" data-name="pid" data-name-value=""
+                               onclick="skipPage(this)">岗位列表</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" data-skip-view="/post_list_en" data-name="pid" data-name-value=""
+                               onclick="skipPage(this)">本单位发布岗位列表</a>
+                        </li>
+                        <li >
+                            <a href="javascript:;" data-skip-view="/add_post_en" onclick="goAdd(this)">申报新岗位信息</a>
+                        </li>
+
+                    </ul>
+                </li>
+                <li class="menu-list" ><a href="#" ><i class="fa fa-book"></i> <span>申请管理</span></a>
+                    <ul class="sub-menu-list">
+                        <li>
+                            <a href="javascript:;" data-skip-view="/order_list_en" data-name="rid" data-name-value="" onclick="skipPage(this)">学生岗位申请</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" data-skip-view="/post_list_en" data-name="uid" th:data-name-value="${session.uid}" onclick="skipPage(this)">岗位申报进度</a>
+                        </li>
+<!--                        <li>-->
+<!--                            <a href="javascript:;" data-skip-view="/maintenance" data_pid="1" onclick="skipPage(this)">酬金申请</a>-->
+<!--                        </li>-->
+                    </ul>
+                </li>
+                <li class="menu-list" ><a href="#" ><i class="fa fa-users"></i> <span>学生工作管理</span></a>
+                    <ul class="sub-menu-list">
+                        <li>
+                            <a href="javascript:;" data-skip-view="/order_list_work" data-name="rid" data-name-value="" onclick="skipPage(this)">学生工作进度</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-list" ><a href="#" ><i class="fa fa-plus"></i> <span>其他</span></a>
+                    <ul class="sub-menu-list">
+                        <li><a href="javascript:;" data-skip-view="/faceReg.html" data-name="stuuid" th:data-name-value="${session.uid}" onclick="skipPage(this)">添加人脸登录</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <ul class="nav nav-pills nav-stacked custom-nav"shiro:hasPermission="学生">
+                <!--                shiro:hasPermission="管理员"-->
+                <li class="menu-list nav-active" >
+                    <a href="index.html" >
+                        <i class="fa fa-home"></i> <span>用户中心</span></a>
+                    <ul class="sub-menu-list">
+                        <li><a href="javascript:;" data-skip-view="/user_data" data-name="uid" th:data-name-value="${session.uid}"  onclick="skipPage(this)">个人中心</a></li>
+                        <li><a href="javascript:;" data-skip-view="/update_password" data-name="uid" th:data-name-value="${session.uid}"  onclick="skipPage(this)">修改密码</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-list" ><a href="#"><i class="fa fa-laptop" ></i> <span>岗位大全</span></a>
+                    <ul class="sub-menu-list">
+                        <li>
+                            <a href="javascript:;" data-skip-view="/post_list" data-name="pid" data-name-value="" onclick="skipPage(this)">岗位列表</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-list" ><a href="#" ><i class="fa fa-book"></i> <span>申请管理</span></a>
+                    <ul class="sub-menu-list">
+                        <li><a href="javascript:;" data-skip-view="/order_list" data-name="stuuid" th:data-name-value="${session.uid}" onclick="skipPage(this)">岗位申请</a></li>
+<!--                        <li><a href="javascript:;" data-skip-view="/maintenance" data-name="rid" data-name-value="" onclick="skipPage(this)">酬金申请</a></li>-->
+                    </ul>
+                </li>
+                <li class="menu-list" ><a href="#" ><i class="fa fa-plus"></i> <span>其他</span></a>
+                    <ul class="sub-menu-list">
+                        <li><a href="javascript:;" data-skip-view="/faceReg.html" data-name="stuuid" th:data-name-value="${session.uid}" onclick="skipPage(this)">添加人脸登录</a></li>
+                        </ul>
+                </li>
+            </ul>
+
+        </div>
+        <!--侧边栏导航结束-->
+    </div>
+</div>
+<!-- 左边结束-->
+
+
+<!-- 头部分开始-->
+<div id="commonheader" class="header-section">
+
+    <!--开关按钮开始-->
+    <a class="toggle-btn"><i class="fa fa-bars"></i></a>
+    <!--开关按钮结束-->
+
+    <!--搜索开始-->
+<!--    <form class="searchform" action="http://view.jqueryfuns.com/2014/4/10/7_df25ceea231ba5f44f0fc060c943cdae/index.html"-->
+<!--          method="post">-->
+<!--        <input type="text" class="form-control" name="keyword" placeholder="Search here..."/>-->
+<!--    </form>-->
+    <!--搜索结束-->
+
+    <!--通知菜单开始 -->
+    <div class="menu-right">
+        <ul class="notification-menu">
+            <li>
+                <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <img src="images/photos/user-avatar.png" alt=""/>
+                    <span th:text="${session.username}"></span>
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-usermenu pull-right">
+                    <li><a href="javascript:;" id="sessionuid" name="sessionuid" data-skip-view="/user_data" data-name="uid" th:data-name-value="${session.uid}" onclick="skipPage(this)"><i class="fa fa-user"></i> 用户信息</a></li>
+                    <li><a href="javascript:;" data-skip-view="/update_password" data-name="uid" th:data-name-value="${session.uid}"  onclick="skipPage(this)"><i class="fa fa-edit"></i> 修改密码</a>
+                    <!--                    <li><a href="#"><i class="fa fa-cog"></i> 设置</a></li>-->
+                    <li><a href="/logout"><i class="fa fa-sign-out"></i>退出系统</a></li>
+                </ul>
+            </li>
+
+        </ul>
+    </div>
+    <!--通知菜单结束 -->
+
+</div>
+<!-- 头部分结束-->
+
+
+<div id="commonscript">
+    <script src="js/jquery-1.10.2.min.js"></script>
+    <script src="js/jquery-ui-1.9.2.custom.min.js"></script>
+    <script src="js/jquery-migrate-1.2.1.min.js"></script>
+    <script src="js/jquery.nicescroll.js"></script>
+
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/modernizr.min.js"></script>
+
+    <!--common scripts for all pages-->
+    <script src="js/scripts.js"></script>
+    <script src="js/myScripts.js"></script>
+    <script src="js/data-tables/DT_bootstrap.js"></script>
+    <script src="js/data-tables/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="js/jquery.validate.min.js"></script>
+    <script src="js/validation-init.js"></script>
+    <script src="js/dynamic_table_init.js"></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.thymeleaf.org/hymeleaf-extras-shiro">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="ThemeBucket">
+    <link rel="shortcut icon" href="#" type="image/png">
+
+    <title>Registration</title>
+
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .video {
+
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 5px;
+            -webkit-border-radius: 5px;
+        }
+        .video .video-heading {
+            margin: 0;
+            padding: 10px 15px;
+            text-align: center;
+            color: #fff;
+            position: relative;
+        }
+    </style>
+</head>
+
+<body class="login-body">
+
+<div class="container">
+    <div class="video" >
+    <div class="video-heading text-center">
+        <h2  style="color: #1b2128">人脸登录注册、更新</h2><h5 id="msg" style="color: #f5072c;display: block;">请先开启摄像头</h5>
+    </div>
+    <div class="login-wrap">
+        <div id="media" style="display:none;">
+            <video id="video" name="video" width="100%" height="300" autoplay></video>
+            <canvas class="text-center" id="canvas" width="530" height="300"></canvas>
+        </div>
+        <div class="text-center">
+            <div id="button-reg" style="display:none; margin:5px;">
+                    <input  type="button" onclick="faceRegister()" value="立即注册、更新" class="btn btn btn-success" />
+            </div>
+            <input type="button" onclick="openVideo()" value="开启摄像头" class="btn btn-primary"/>
+            <input type="button" onclick="closeVideo()" value="关闭摄像头" class="btn btn-primary"/>
+        </div>
+    </div></div>
+</div>
+<script type="text/javascript">
+    var video = document.getElementById("video");
+    var context = canvas.getContext("2d");
+    var con = {
+        audio: false,
+        video: true,
+        video: {
+            width: 1980,
+            height: 1024,
+        }
+    };
+    var stream;
+    //通过按钮开启摄像头
+    function openVideo() {
+        $("#media").css("display","block");
+        $("#button-reg").css("display","block");
+        $("#msg").css("display","none");
+        //导航获取用户媒体对象
+        navigator.mediaDevices.getUserMedia(con).then(function (newStream) {
+            try {
+                video.src = window.URL.createObjectURL(newStream);
+            } catch (e) {
+                stream = newStream;
+                video.srcObject = stream;
+            }
+            video.onloadmetadate = function (e) {
+                video.play();
+            }
+        });
+    }
+    //通过按钮关闭摄像头
+function closeVideo(){
+    $("#media").css("display","none");
+    $("#button-reg").css("display","none");
+    $("#msg").css("display","block");
+    if (stream) {
+        var tracks = stream.getTracks();
+
+        tracks[0].stop();
+        videoElement.srcObject = null;
+
+        stream = null;
+    }
+
+}
+
+    // var token = $("meta[name='_csrf']").attr("content");
+    // var header = $("meta[name='_csrf_header']").attr("content");
+    // $(document).ajaxSend(function(e,xhr,options){
+    //   xhr.setRequestHeader(header,token);
+    // });
+    function faceRegister() {
+        //把流媒体数据画到convas画布上去
+        context.drawImage(video, 0, 0, 530, 300);
+        var img = getBase64();
+        //返回用户列表界面
+        $.ajax({
+            url: "/faceRegister",
+            type: "post",
+            data: {"img": img},
+            success: function (msg) {
+                console.log("msg====" + msg);
+                if (msg == "SUCCESS") {
+
+                    alert("成功");
+                    // window.location.href = "main.html";
+                } else {
+                    alert("失败");
+                }
+            },
+            error: function (msg) {
+                alert("消息" + msg);
+            }
+        });
+    }
+
+    function getBase64() {
+        var imgSrc = document.getElementById("canvas").toDataURL("image/png");
+        return imgSrc.split("base64,")[1];
+    };
+</script>
+</body>
+</html>

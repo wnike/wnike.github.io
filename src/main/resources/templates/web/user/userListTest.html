@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="panel-body">
+    <div class="adv-table">
+        <div id="hidden-table-info_wrapper" class="dataTables_wrapper form-inline" role="grid">
+            <form id="searchForm">
+                <input type="hidden" name="currentPage" id="currentPage" th:value="1">
+                <div class="row-fluid">
+                    <div class="span6">
+                        <!--                    <div id="hidden-table-info_length" class="dataTables_length">-->
+                        <!--                        <label>-->
+                        <!--                            <select class="form-control"-->
+                        <!--                                    size="1"-->
+                        <!--                                    name="hidden-table-info_length"-->
+                        <!--                                    aria-controls="hidden-table-info">-->
+                        <!--                                <option value="10" selected="selected">10</option>-->
+                        <!--                                <option value="25">25</option>-->
+                        <!--                                <option value="50">50</option>-->
+                        <!--                                <option value="100">100</option>-->
+                        <!--                            </select>-->
+                        <!--                            records per page-->
+                        <!--                        </label>-->
+                        <!--                    </div>-->
+                    </div>
+                    <div class="span6">
+                        <div class="dataTables_filter" id="hidden-table-info_filter">
+                            <label>查询:
+                                <input id="username" type="text" name="username" class="form-control"
+                                       aria-controls="hidden-table-info" style="float: none;width: 69%"
+                                       th:value="${searchUser.username}" placeholder="可以直接输入或选择"><a href="javascript:;"
+                                                                                                    style="float: right"
+                                                                                                    onclick="skipPage(1);"
+                                                                                                    class="confirm">搜索</a>
+
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <table class="display table table-bordered dataTable" id="hidden-table-info"
+                   aria-describedby="hidden-table-info_info">
+                <!-- 表头-->
+                <thead>
+                <tr role="row">
+                    <th class="sorting_disabled num" role="columnheader" rowspan="1" colspan="1" aria-label=""
+                        style="width: 4.4px;">
+                        <input style="height: auto;" type="checkbox" id="checkAll"/>
+                    </th>
+                    <th class="sorting_asc" role="columnheader" tabindex="0" aria-controls="hidden-table-info"
+                        rowspan="1" colspan="1" aria-sort="ascending"
+                        aria-label="Rendering engine: activate to sort column descending" style="width: 161.4px;">
+                        用户id
+                    </th>
+                    <th class="sorting" role="columnheader" tabindex="0" aria-controls="hidden-table-info" rowspan="1"
+                        colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 238.4px;">
+                        用户名
+                    </th>
+                    <th class="hidden-phone sorting" role="columnheader" tabindex="0" aria-controls="hidden-table-info"
+                        rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending"
+                        style="width: 222.4px;">用户角色
+                    </th>
+                    <th class="hidden-phone sorting" role="columnheader" tabindex="0" aria-controls="hidden-table-info"
+                        rowspan="1" colspan="2" aria-label="Engine version: activate to sort column ascending"
+                        style="width: 134.4px;">操作
+                    </th>
+
+                </tr>
+                </thead>
+
+                <tbody role="alert" aria-live="polite" aria-relevant="all">
+                <tr th:each="user:${pageInfo.list}" class="gradeA odd">
+                    <td class="center num">
+                        <input style="height: auto;" name="uid" type="checkbox" th:value="${user.uid}"/>
+                    </td>
+                    <td class="  sorting_1" th:text="${user.uid}">uid</td>
+                    <td class="name" th:text="${user.username}">username</td>
+                    <td class="name" th:text="${user.rid}">rid</td>
+                    <td class="center operate">
+                        <a th:href="@{/detailUser(uid=${user.uid})}">查看详情</a>&nbsp;&nbsp;
+                        <a th:href="@{/updateUser.html(uid=${user.uid})}">修改</a>&nbsp;&nbsp;
+                        <!-- <a th:href="@{/deleteUser(uid=${user.uid})}">删除</a>-->
+                        <a href="#" th:onclick="deleteUser([[${user.uid}]])">删除</a>
+                    </td>
+                </tr>
+                <!--                <tr class="gradeA even">-->
+                <!--                    <td class="center "><img src="images/details_open.png"></td>-->
+                <!--                    <td class="  sorting_1">Gecko</td>-->
+                <!--                    <td class=" ">Firefox 1.5</td>-->
+                <!--                    <td class="hidden-phone ">Win 98+ / OSX.2+</td>-->
+                <!--                    <td class="center hidden-phone ">1.8</td>-->
+                <!--                    <td class="center hidden-phone ">A</td>-->
+                <!--                </tr>-->
+
+                </tbody>
+            </table>
+            <div class="row-fluid">
+                <div class="span6">
+                    <div class="dataTables_info" id="hidden-table-info_info">Showing [[${pageInfo.startRow}]] to
+                        [[${pageInfo.endRow}]] of [[${pageInfo.total}]] entries
+                    </div>
+                </div>
+                <div class="span6">
+                    <div class="dataTables_paginate paging_bootstrap pagination">
+                        <ul>
+                            <li class="prev disabled"><a href="#">← Previous</a></li>
+                            <li class="active"><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">4</a></li>
+                            <li><a href="#">5</a></li>
+                            <li class="next"><a href="#">Next → </a></li>
+                        </ul>
+                        <!--                        <ul>-->
+                        <!--                            <li class="prev disabled"><a href="list?pageNum=${pageInfo.pageNum-1}">← Previous</a></li>-->
+                        <!--                            <li class="active" th:each="plist:${pageInfo.list}">-->
+                        <!--                                <a href="" th:text="${pageInfo.pageNum}"></a>-->
+                        <!--                            </li>-->
+                        <!--                            <li ><a href="#">2</a></li>-->
+
+                        <!--                            <li class="next"><a href="list?pageNum=${pageInfo.pageNum+1}">Next → </a></li>-->
+                        <!--                        </ul>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+    function skipPage(currentPage) {
+        $("#currentPage").val(currentPage);
+        //ajax 请求
+        $.ajax({
+            url: "/user_list",
+            type: "get",
+            data: $("#searchForm").serialize(),
+            dataType: "html",
+            success: function (ht) {
+
+                $("#right").html(ht);  //请求的界面数据在右侧显示
+            },
+            error: function (ht) {
+                $("#right").html("加载失败", ht);  //请求的界面数据在右侧显示
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ning.bishe01.mapper.PostMapper">
+
+    <!-- 自定义结果映射规则：映射了关联的角色信息-->
+    <resultMap id="postUserResultMap" type="Post">
+        <id property="pid" column="pid"/>
+        <result property="uid" column="uid"/>
+        <result property="postname" column="postname"/>
+        <result property="pdescribe" column="pdescribe"/>
+        <result property="salary" column="salary"/>
+        <result property="totalNumber" column="total_number"/>
+        <result property="hireNumber" column="hire_number"/>
+        <result property="applyPost" column="apply_post"/>
+        <!--一对一的数据关联-->
+        <association property="user" javaType="User">
+            <id property="uid" column="uid"/>
+            <result property="username" column="username"/>
+        </association>
+    </resultMap>
+    <select id="selectUidByPid" resultMap="postUserResultMap" >
+        select *
+        from t_post
+        where pid = #{pid}
+    </select>
+
+    <select id="selectPostByPid" resultMap="postUserResultMap" >
+        select p.*, u.*
+        from t_post p,
+             t_user u
+        where p.pid = #{pid}
+        <if test="uid!=null or uid!=''">
+          and  p.uid = u.uid
+</if>
+    </select>
+
+
+
+
+
+<!--     查询岗位信息通过pid-->
+
+    <select id="selectByPid" resultMap="postUserResultMap" >
+        select p.*, u.*
+        from t_post p,
+             t_user u
+        where p.uid = u.uid and p.apply_post=#{applyPost}
+          and p.pid = #{pid}
+    </select>
+    <select id="selectPostList" resultMap="postUserResultMap">
+        select p.*, u.*
+        from t_post p,
+             t_user u
+        where p.uid = u.uid
+        <if test="applyPost!=null or applyPost!=''">
+            and p.apply_post=#{applyPost}
+        </if>
+        <if test="uid!=null and uid!=''">
+            and u.uid=#{uid}
+        </if>
+    </select>
+    <!-- 管理员添加岗位信息 -->
+    <insert id="insertPost">
+        insert into t_post (pid, postname, uid, pdescribe,salary,total_number,hire_number,apply_post)
+        values (#{pid}, #{postname}, #{uid}, #{pdescribe},#{salary},#{totalNumber},#{hireNumber},#{applyPost})
+    </insert>
+
+    <!-- 删除岗位信息通过pid -->
+    <delete id="deletePost">
+        delete
+        from t_post
+        where pid = #{pid}
+    </delete>
+    <!-- 修改岗位信息通过pid -->
+    <update id="updatePost">
+        update t_post
+        set
+        <if test="postname!=null and postname!=''">
+            postname=#{postname},
+            uid=#{uid},
+            pdescribe=#{pdescribe},
+            salary=#{salary},
+            total_number=#{totalNumber},
+            hire_number=#{hireNumber},
+        </if>
+        apply_post=#{applyPost}
+        where pid = #{pid}
+    </update>
+<!--管理员同意学生申请岗位时岗位招收人数发生改变-->
+    <update id="updatePostAdmin">
+        update t_post
+        set hire_number=#{hireNumber}
+        where pid = #{pid}
+    </update>
+
+
+<!--      <select id="selectPostList" resultMap="postResultMap">-->
+<!--          select * from post-->
+<!--      </select>-->
+<!--      <select id="selctByPid" resultType="Post">-->
+<!--          select * from post where pid=#{pid}-->
+<!--      </select>-->
+
+
+
+
+
+</mapper>
